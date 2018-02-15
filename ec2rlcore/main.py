@@ -93,6 +93,8 @@ class Main(object):
         bug_report: display version information relevant for inclusion in a bug report
         upload: upload a tarball of a directory to S3 using either a presigned URL or an AWS-support provided URL
         run: run one or more modules
+        _init_version_check: compares PROGRAM_VERSION against the upstream version and prints a single line if an
+        update is available
         _run_prunemodules: determines whether each module should be run and removes modules that should not be run from
         the list of modules that will be run
         _run_backup: creates a backup of the type appropriate to the parsed arguments
@@ -162,6 +164,8 @@ class Main(object):
         # If the user specified a subcommand use that instead of the default.
         if self.options.subcommand:
             self.subcommand = self.options.subcommand
+
+        self._init_version_check()
 
         if full_init:
             self.full_init()
@@ -634,8 +638,11 @@ class Main(object):
 
     def version_check(self):
         """
-        Get the current upstream version, compare against this version, inform the user whether an update is available,
-        and return True.
+        Obtain and compare the upstream version against this object's version.
+        Inform the user whether an update is available.
+
+        Returns:
+            (bool): True if an update is available else False
         """
         try:
             upstream_version = ec2rlcore.programversion.ProgramVersion(requests.get(self.VERSION_ENDPOINT).text.strip())
@@ -1079,6 +1086,26 @@ class Main(object):
             ec2rlcore.dual_log("https://aws.au1.qualtrics.com/jfe1/form/SV_3KrcrMZ2quIDzjn?InstanceID={}&Version={}\n".
                                format(ec2rlcore.awshelpers.get_instance_id(), self.PROGRAM_VERSION))
         return True
+
+    def _init_version_check(self):
+        """
+        Obtain and compare the upstream version against this object's version.
+        This is a quiet(er) version of version_check that only prints (a single line) if an update is available.
+
+        Returns:
+            (bool): True if an update is available else False
+        """
+
+        try:
+            upstream_version = ec2rlcore.programversion.ProgramVersion(
+                requests.get(self.VERSION_ENDPOINT, timeout=0.1).text.strip())
+        except requests.exceptions.Timeout:
+            return False
+
+        if upstream_version > self.PROGRAM_VERSION:
+            print("An update is available: {} -> {}".format(self.PROGRAM_VERSION, upstream_version))
+            return True
+        return False
 
 
 class MainError(Exception):

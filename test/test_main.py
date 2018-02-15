@@ -77,10 +77,11 @@ class TestMain(unittest.TestCase):
     ec2rl = None
     PROGRAM_VERSION = str(ec2rlcore.main.Main.PROGRAM_VERSION)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
-    def setUp(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock):
+    def setUp(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock, version_mock):
         sys.argv = ["test/modules/not_a_real_file", "run", "--abc=def"]
         os.chdir(self.callpath)
         os.environ["EC2RL_SUDO"] = "False"
@@ -94,6 +95,7 @@ class TestMain(unittest.TestCase):
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
         self.output = StringIO()
 
@@ -404,10 +406,11 @@ class TestMain(unittest.TestCase):
                                                  "Supports remediation: False\n")
         del self.ec2rl.options.global_args["onlymodules"]
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
-    def test_main_onlydomain_double_add(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock):
+    def test_main_onlydomain_double_add(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock, version_mock):
         """Test that specifying the same domain twice doesn't add it to the list twice."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -418,11 +421,13 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
-    def test_main_onlyclasses_double_add(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock):
+    def test_main_onlyclasses_double_add(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock, version_mock):
         """Test that specifying the same class twice doesn't add it to the list twice."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -433,10 +438,12 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
-    def test_main_help_domain(self, main_log_handler_mock, mkdir_mock):
+    def test_main_help_domain(self, main_log_handler_mock, mkdir_mock, version_mock):
         """Test help output for a domain of modules."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -452,10 +459,12 @@ class TestMain(unittest.TestCase):
         self.assertTrue(self.output.getvalue().endswith("ed skbs\nRequires sudo: False\nSupports remediation: False\n"))
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
-    def test_main_help_class(self, main_log_handler_mock, mkdir_mock):
+    def test_main_help_class(self, main_log_handler_mock, mkdir_mock, version_mock):
         """Test help output for a class of modules."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -471,11 +480,13 @@ class TestMain(unittest.TestCase):
         self.assertTrue(self.output.getvalue().endswith("ed skbs\nRequires sudo: False\nSupports remediation: False\n"))
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
-    def test_main_default_subcommand(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock):
+    def test_main_default_subcommand(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock, version_mock):
         """Test that the default subcommand is set."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -486,6 +497,7 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
     def test_main_help_subcommand(self):
         """Test help output for the 'run' subcommand."""
@@ -629,6 +641,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(self.ec2rl.options.per_module_args["atop"]["period"], "1")
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("logging.FileHandler")
     @mock.patch("ec2rlcore.options.Options.write_config", side_effect=simple_return)
     @mock.patch("os.chdir", side_effect=simple_return)
@@ -645,7 +658,8 @@ class TestMain(unittest.TestCase):
                                   copyfile_mock,
                                   chdir_mock,
                                   write_config_mock,
-                                  logging_fh_mock):
+                                  logging_fh_mock,
+                                  version_mock):
         """Test running ec2rl from the menu."""
         # Setup the instance of Main
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
@@ -690,6 +704,7 @@ class TestMain(unittest.TestCase):
         self.assertTrue(chdir_mock.called)
         self.assertTrue(write_config_mock.called)
         self.assertTrue(logging_fh_mock.called)
+        self.assertTrue(version_mock.called)
         # The resulting subcommand should be "run"
         self.assertEqual(ec2rl_run_test.subcommand, "run")
 
@@ -723,13 +738,15 @@ class TestMain(unittest.TestCase):
         self.assertTrue("Global" not in self.ec2rl._modules)
         self.assertTrue(write_config_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__run_prunemodules_only_modules(self,
                                                  main_log_handler_mock,
                                                  debug_log_handler_mock,
-                                                 mkdir_mock):
+                                                 mkdir_mock,
+                                                 version_mock):
         """Test that --only-modules=arpcache results in just that single module remaning after pruning."""
         # Test --only-modules=
         path_to_ec2rl = os.path.abspath("ec2rl")
@@ -750,8 +767,10 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
         self.assertEqual(len(ec2rl_pruning_test.prune_stats), 0, "Exactly 0 elements in prune stats")
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -760,7 +779,8 @@ class TestMain(unittest.TestCase):
                                                  main_log_handler_mock,
                                                  debug_log_handler_mock,
                                                  mkdir_mock,
-                                                 which_mock):
+                                                 which_mock,
+                                                 version_mock):
         """Test that --only-domains=os results the expected number of remaining modules after pruning.
         Note: this number is actually less than the total number of os modules because some will fail
         other prediagnostic checks."""
@@ -780,7 +800,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
         self.assertTrue(which_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -789,7 +811,8 @@ class TestMain(unittest.TestCase):
                                                  main_log_handler_mock,
                                                  debug_log_handler_mock,
                                                  mkdir_mock,
-                                                 which_mock):
+                                                 which_mock,
+                                                 version_mock):
         """Test that --only-classes=diagnose results the expected number of remaining modules after pruning.
         Note: this number is actually less than the total number of diagnose modules because some will fail
         other prediagnostic checks."""
@@ -810,14 +833,17 @@ class TestMain(unittest.TestCase):
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
         self.assertTrue(which_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__run_prunemodules_software_constraint(self,
                                                         main_log_handler_mock,
                                                         debug_log_handler_mock,
-                                                        mkdir_mock):
+                                                        mkdir_mock,
+                                                        version_mock):
         """Test that modules are pruned when the software constraint is not satisfied."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -845,13 +871,15 @@ class TestMain(unittest.TestCase):
         self.assertEqual(ec2rl_pruning_test.prune_stats.get(ec2rlcore.module.SkipReason.MISSING_SOFTWARE, 0), 1,
                          "Prune stats counted 1 MISSING_SOFTWARE prune")
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__run_prunemodules_perfimpact_constraint(self,
                                                           main_log_handler_mock,
                                                           debug_log_handler_mock,
-                                                          mkdir_mock):
+                                                          mkdir_mock,
+                                                          version_mock):
         """Test that modules are pruned when the perfimpact constraint is not satisfied."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -872,20 +900,23 @@ class TestMain(unittest.TestCase):
         self.assertEqual(len(ec2rl_pruning_test._modules), 0)
         self.assertEqual(the_module.whyskipping,
                          "Requires performance impact okay, but not given.")
-        self.assertTrue(main_log_handler_mock.called)
-        self.assertTrue(debug_log_handler_mock.called)
-        self.assertTrue(mkdir_mock.called)
         self.assertEqual(len(ec2rl_pruning_test.prune_stats), 1, "Exactly 1 element in prune stats")
         self.assertEqual(ec2rl_pruning_test.prune_stats.get(ec2rlcore.module.SkipReason.PERFORMANCE_IMPACT, 0), 1,
                          "Prune stats counted 1 PERFORMANCE_IMPACT prune")
+        self.assertTrue(main_log_handler_mock.called)
+        self.assertTrue(debug_log_handler_mock.called)
+        self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__run_prunemodules_requires_ec2_constraint(self,
                                                             main_log_handler_mock,
                                                             debug_log_handler_mock,
-                                                            mkdir_mock):
+                                                            mkdir_mock,
+                                                            version_mock):
         """Test that modules are pruned when the ec2_required constraint is not satisfied."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -906,11 +937,13 @@ class TestMain(unittest.TestCase):
         self.assertEqual(len(ec2rl_pruning_test._modules), 0)
         self.assertEqual(the_module.whyskipping,
                          "Module requires system be an EC2 instance.")
+        self.assertEqual(len(ec2rl_pruning_test.prune_stats), 0, "Exactly 0 elements in prune stats")
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
-        self.assertEqual(len(ec2rl_pruning_test.prune_stats), 0, "Exactly 0 elements in prune stats")
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("logging.FileHandler")
     @mock.patch("os.makedirs", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
@@ -931,7 +964,8 @@ class TestMain(unittest.TestCase):
                                       debug_log_handler_mock,
                                       mkdir_mock,
                                       makedirs_mock,
-                                      logging_fh_mock):
+                                      logging_fh_mock,
+                                      version_mock):
         """Test that successfully running prediagnostics returns True."""
         logging_fh_mock.setFormatter = mock.MagicMock(return_value=True)
         ec2rl_prediag_test = ec2rlcore.main.Main(debug=True, full_init=True)
@@ -949,7 +983,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(mkdir_mock.called)
         self.assertTrue(makedirs_mock.called)
         self.assertTrue(logging_fh_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("logging.FileHandler")
     @mock.patch("os.makedirs", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
@@ -970,7 +1006,8 @@ class TestMain(unittest.TestCase):
                                               debug_log_handler_mock,
                                               mkdir_mock,
                                               makedirs_mock,
-                                              logging_fh_mock):
+                                              logging_fh_mock,
+                                              version_mock):
         """Test that successfully running prediagnostics returns True."""
         logging_fh_mock.setFormatter = mock.MagicMock(return_value=True)
         ec2rl_prediag_test = ec2rlcore.main.Main(debug=True, full_init=True)
@@ -989,7 +1026,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(mkdir_mock.called)
         self.assertTrue(makedirs_mock.called)
         self.assertTrue(logging_fh_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("logging.FileHandler")
     @mock.patch("os.makedirs", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
@@ -1006,7 +1045,8 @@ class TestMain(unittest.TestCase):
                                                     debug_log_handler_mock,
                                                     mkdir_mock,
                                                     makedirs_mock,
-                                                    logging_fh_mock):
+                                                    logging_fh_mock,
+                                                    version_mock):
         """
         Test that successfully running prediagnostics returns True and sets the EC2RL_VIRT_TYPE properly 
         when the arg --not-an-instance is given.
@@ -1026,7 +1066,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(mkdir_mock.called)
         self.assertTrue(makedirs_mock.called)
         self.assertTrue(logging_fh_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1041,7 +1083,8 @@ class TestMain(unittest.TestCase):
                                                     check_root_mock,
                                                     main_log_handler_mock,
                                                     debug_log_handler_mock,
-                                                    mkdir_mock):
+                                                    mkdir_mock,
+                                                    version_mock):
         """Test that _run_prediagnostics() raises MainPrediagnosticFailure when the metadata server is inaccessible."""
         ec2rl_prediag_test = ec2rlcore.main.Main(debug=True, full_init=True)
         module_path = os.path.join(self.callpath, "test/modules/pre.d")
@@ -1058,7 +1101,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1075,7 +1120,8 @@ class TestMain(unittest.TestCase):
                                                             check_root_mock,
                                                             main_log_handler_mock,
                                                             debug_log_handler_mock,
-                                                            mkdir_mock):
+                                                            mkdir_mock,
+                                                            version_mock):
         """Test that _run_prediagnostics() successfully completes when the only module isn't applicable."""
         ec2rl_prediag_test = ec2rlcore.main.Main(debug=True, full_init=True)
         module_path = os.path.join(self.callpath, "test/modules/pre.d")
@@ -1090,11 +1136,13 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
-    def test_main__run_backup_no_options(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock):
+    def test_main__run_backup_no_options(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock, version_mock):
         """Test that _run_backup() runs (doesn"t necessarily do anything though) when no backup options are set."""
         ec2rl_prediag_test = ec2rlcore.main.Main(debug=True, full_init=True)
         with contextlib.redirect_stdout(self.output):
@@ -1104,13 +1152,15 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     @moto.mock_ec2
-    def test_main__run_backup_allvolumes(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock):
+    def test_main__run_backup_allvolumes(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock, version_mock):
         """Test that _run_backup() runs correctly when allvolumes are specified."""
         instanceid = self.setup_ec2()
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/placement/availability-zone",
@@ -1128,13 +1178,15 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     @moto.mock_ec2
-    def test_main__run_backup_ami(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock):
+    def test_main__run_backup_ami(self, main_log_handler_mock, debug_log_handler_mock, mkdir_mock, version_mock):
         """Test that _run_backup() runs correctly when ami is specified."""
         instanceid = self.setup_ec2()
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/placement/availability-zone",
@@ -1151,14 +1203,17 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__run_backup_empty_backup_value(self,
                                                  main_log_handler_mock,
                                                  debug_log_handler_mock,
-                                                 mkdir_mock):
+                                                 mkdir_mock,
+                                                 version_mock):
         """Test that an invalid backup value raise an MainInvalidVolumeSpecificationError exception."""
         ec2rl_prediag_test = ec2rlcore.main.Main(debug=True, full_init=True)
         ec2rl_prediag_test.options.global_args["backup"] = ""
@@ -1172,8 +1227,10 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1181,7 +1238,8 @@ class TestMain(unittest.TestCase):
     def test_main__run_backup_invalid_ebs_volumeid_value(self,
                                                          main_log_handler_mock,
                                                          debug_log_handler_mock,
-                                                         mkdir_mock):
+                                                         mkdir_mock,
+                                                         version_mock):
         """Test that an invalid EBS volume name raise a ClientError exception."""
         instanceid = self.setup_ec2()
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/placement/availability-zone",
@@ -1198,10 +1256,12 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
-    def test_main_missing_subcommand(self, main_log_handler_mock, mkdir_mock):
+    def test_main_missing_subcommand(self, main_log_handler_mock, mkdir_mock, version_mock):
         """Test that the short help message is printed when no subcommand is provided."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -1214,6 +1274,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(len(self.output.getvalue()), 1066)
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
     def test_main_upload_missing_uploaddirectory(self):
         """Test how the missing --upload-directory arg is handled."""
@@ -1310,6 +1371,7 @@ class TestMain(unittest.TestCase):
         del self.ec2rl.options.global_args["uploaddirectory"]
         del self.ec2rl.options.global_args["presignedurl"]
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1317,7 +1379,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_diagnose_unknown(self,
                                                    main_log_handler_mock,
                                                    debug_log_handler_mock,
-                                                   mkdir_mock):
+                                                   mkdir_mock,
+                                                   version_mock):
         """Test that _summary() returns True and test its output when the run_status is UNKNOWN."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1340,7 +1403,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1348,7 +1413,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_diagnose_success(self,
                                                    main_log_handler_mock,
                                                    debug_log_handler_mock,
-                                                   mkdir_mock):
+                                                   mkdir_mock,
+                                                   version_mock):
         """Test that _summary() returns True and test its output when the run_status is SUCCESS."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1371,7 +1437,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1379,7 +1447,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_diagnose_failure(self,
                                                    main_log_handler_mock,
                                                    debug_log_handler_mock,
-                                                   mkdir_mock):
+                                                   mkdir_mock,
+                                                   version_mock):
         """Test that _summary() returns True and test its output when the run_status is FAILURE."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1402,7 +1471,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1410,7 +1481,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_diagnose_warn(self,
                                                 main_log_handler_mock,
                                                 debug_log_handler_mock,
-                                                mkdir_mock):
+                                                mkdir_mock,
+                                                version_mock):
         """Test that _summary() returns True and test its output when the run_status is WARN."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1433,7 +1505,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1441,7 +1515,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_diagnose_empty_run_status_details(self,
                                                                     main_log_handler_mock,
                                                                     debug_log_handler_mock,
-                                                                    mkdir_mock):
+                                                                    mkdir_mock,
+                                                                    version_mock):
         """Test that _summary() returns True and prints the expected amount of characters."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1467,7 +1542,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1475,7 +1552,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_collect_unknown(self,
                                                   main_log_handler_mock,
                                                   debug_log_handler_mock,
-                                                  mkdir_mock):
+                                                  mkdir_mock,
+                                                  version_mock):
         """
         Test that _summary() returns True for a single collect module when there are no diagnose modules run
         and test its output when the run_status is UNKNOWN.
@@ -1502,7 +1580,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1510,7 +1590,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_collect_success(self,
                                                   main_log_handler_mock,
                                                   debug_log_handler_mock,
-                                                  mkdir_mock):
+                                                  mkdir_mock,
+                                                  version_mock):
         """
         Test that _summary() returns True for a single collect module when there are no diagnose modules run
         and test its output when the run_status is SUCCESS.
@@ -1537,7 +1618,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1545,7 +1628,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_collect_failure(self,
                                                   main_log_handler_mock,
                                                   debug_log_handler_mock,
-                                                  mkdir_mock):
+                                                  mkdir_mock,
+                                                  version_mock):
         """
         Test that _summary() returns True for a single collect module when there are no diagnose modules run
         and test its output when the run_status is FAILURE.
@@ -1572,7 +1656,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
@@ -1580,7 +1666,8 @@ class TestMain(unittest.TestCase):
     def test_main__summary_single_diagnose_warn(self,
                                                 main_log_handler_mock,
                                                 debug_log_handler_mock,
-                                                mkdir_mock):
+                                                mkdir_mock,
+                                                version_mock):
         """
         Test that _summary() returns True for a single collect module when there are no diagnose modules run
         and test its output when the run_status is WARN.
@@ -1607,6 +1694,7 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
     @mock.patch("logging.FileHandler")
     @mock.patch("os.makedirs", side_effect=simple_return)
@@ -1643,6 +1731,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(len(self.output.getvalue()), 8438)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("logging.FileHandler")
     @mock.patch("ec2rlcore.options.Options.write_config", side_effect=simple_return)
     @mock.patch("os.chdir", side_effect=simple_return)
@@ -1659,7 +1748,8 @@ class TestMain(unittest.TestCase):
                       copyfile_mock,
                       chdir_mock,
                       write_config_mock,
-                      logging_fh_mock):
+                      logging_fh_mock,
+                      version_mock):
         """Test running the instance of Main."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1692,8 +1782,10 @@ class TestMain(unittest.TestCase):
         self.assertTrue(chdir_mock.called)
         self.assertTrue(write_config_mock.called)
         self.assertTrue(logging_fh_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("logging.FileHandler")
     @mock.patch("ec2rlcore.options.Options.write_config", side_effect=simple_return)
     @mock.patch("os.chdir", side_effect=simple_return)
@@ -1710,7 +1802,8 @@ class TestMain(unittest.TestCase):
                                     copyfile_mock,
                                     chdir_mock,
                                     write_config_mock,
-                                    logging_fh_mock):
+                                    logging_fh_mock,
+                                    version_mock):
         """Test running the instance of Main with a single binary module."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1744,8 +1837,10 @@ class TestMain(unittest.TestCase):
         self.assertTrue(chdir_mock.called)
         self.assertTrue(write_config_mock.called)
         self.assertTrue(logging_fh_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("ec2rlcore.main.Main._run_backup", side_effect=simple_return)
     @mock.patch("logging.FileHandler")
     @mock.patch("ec2rlcore.options.Options.write_config", side_effect=simple_return)
@@ -1764,7 +1859,8 @@ class TestMain(unittest.TestCase):
                                     chdir_mock,
                                     write_config_mock,
                                     logging_fh_mock,
-                                    backup_mock):
+                                    backup_mock,
+                                    version_mock):
         """Test running the instance of Main. Verify that _run_backup is not called."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1799,8 +1895,10 @@ class TestMain(unittest.TestCase):
         self.assertTrue(write_config_mock.called)
         self.assertTrue(logging_fh_mock.called)
         self.assertFalse(backup_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("ec2rlcore.options.Options.write_config", side_effect=simple_return)
     @mock.patch("os.chdir", side_effect=simple_return)
     @mock.patch("shutil.copyfile", side_effect=simple_return)
@@ -1815,7 +1913,8 @@ class TestMain(unittest.TestCase):
                                    mkdir_mock,
                                    copyfile_mock,
                                    chdir_mock,
-                                   write_config_mock):
+                                   write_config_mock,
+                                   version_mock):
         """Test running the instance of Main with no modules."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1849,8 +1948,10 @@ class TestMain(unittest.TestCase):
         self.assertTrue(copyfile_mock.called)
         self.assertTrue(chdir_mock.called)
         self.assertTrue(write_config_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("logging.FileHandler")
     @mock.patch("ec2rlcore.options.Options.write_config", side_effect=simple_return)
     @mock.patch("os.chdir", side_effect=simple_return)
@@ -1867,7 +1968,8 @@ class TestMain(unittest.TestCase):
                                              copyfile_mock,
                                              chdir_mock,
                                              write_config_mock,
-                                             logging_fh_mock):
+                                             logging_fh_mock,
+                                             version_mock):
         """Test running the instance of Main and check the length of its output to stdout."""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1900,8 +2002,10 @@ class TestMain(unittest.TestCase):
         self.assertTrue(chdir_mock.called)
         self.assertTrue(write_config_mock.called)
         self.assertTrue(logging_fh_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("ec2rlcore.paralleldiagnostics.parallel_run")
     @mock.patch("ec2rlcore.options.Options.write_config", side_effect=simple_return)
     @mock.patch("os.chdir", side_effect=simple_return)
@@ -1918,7 +2022,8 @@ class TestMain(unittest.TestCase):
                                       copyfile_mock,
                                       chdir_mock,
                                       write_config_mock,
-                                      parallel_run_mock):
+                                      parallel_run_mock,
+                                      version_mock):
         """Test that concurrency is set to 1 when specificed as less than 1"""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -1950,8 +2055,10 @@ class TestMain(unittest.TestCase):
         self.assertTrue(copyfile_mock.called)
         self.assertTrue(chdir_mock.called)
         self.assertTrue(write_config_mock.called)
+        self.assertTrue(version_mock.called)
 
     @responses.activate
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("ec2rlcore.paralleldiagnostics.parallel_run")
     @mock.patch("ec2rlcore.options.Options.write_config", side_effect=simple_return)
     @mock.patch("os.chdir", side_effect=simple_return)
@@ -1968,7 +2075,8 @@ class TestMain(unittest.TestCase):
                                       copyfile_mock,
                                       chdir_mock,
                                       write_config_mock,
-                                      parallel_run_mock):
+                                      parallel_run_mock,
+                                      version_mock):
         """Test that concurrency is set to 100 when specificed as greater than 100"""
         responses.add(responses.GET, "http://169.254.169.254/latest/meta-data/instance-id", body="i-deadbeef",
                       status=200)
@@ -2000,6 +2108,7 @@ class TestMain(unittest.TestCase):
         self.assertTrue(copyfile_mock.called)
         self.assertTrue(chdir_mock.called)
         self.assertTrue(write_config_mock.called)
+        self.assertTrue(version_mock.called)
 
     @mock.patch("shutil.copyfile", side_effect=OSError())
     def test_main_run_copy_error(self, mock_side_effect_function):
@@ -2037,13 +2146,15 @@ class TestMain(unittest.TestCase):
             self.ec2rl.version_check()
             self.assertTrue(requests_get_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main_software_check_missing_software(self,
                                                   main_log_handler_mock,
                                                   debug_log_handler_mock,
-                                                  mkdir_mock):
+                                                  mkdir_mock,
+                                                  version_mock):
         """Test that software_check returns the expected list of software."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -2066,14 +2177,17 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main_software_check_missing_software_parse_failure(self,
                                                                 main_log_handler_mock,
                                                                 debug_log_handler_mock,
-                                                                mkdir_mock):
+                                                                mkdir_mock,
+                                                                version_mock):
         """Test that software_check handles a failure to parse the package value into the name and URL."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -2098,7 +2212,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("ec2rlcore.prediag.which", side_effect=[True])
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
@@ -2107,7 +2223,8 @@ class TestMain(unittest.TestCase):
                                                           main_log_handler_mock,
                                                           debug_log_handler_mock,
                                                           mkdir_mock,
-                                                          which_mock):
+                                                          which_mock,
+                                                          version_mock):
         """Test that software_check returns the expected list of software."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -2126,14 +2243,17 @@ class TestMain(unittest.TestCase):
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
         self.assertTrue(which_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     def test_main_debug_false(self,
                               main_log_handler_mock,
                               debug_log_hander_mock,
-                              mkdir_mock):
+                              mkdir_mock,
+                              version_mock):
         """Test that debug handler is not called when debug=False."""
         path_to_ec2rl = os.path.abspath("ec2rl")
         test_path = os.path.sep.join([os.path.split(path_to_ec2rl)[0], "test", "modules", "ec2rl"])
@@ -2157,14 +2277,17 @@ class TestMain(unittest.TestCase):
         self.assertFalse(main_log_handler_mock.called)
         self.assertFalse(debug_log_hander_mock.called)
         self.assertFalse(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__summary_noinstance_unknown(self,
                                               main_log_handler_mock,
                                               debug_log_handler_mock,
-                                              mkdir_mock):
+                                              mkdir_mock,
+                                              version_mock):
         """
         Test that _summary() returns True and test its output when the run_status is UNKNOWN 
         and the arg --not-an-instance is given.
@@ -2188,14 +2311,17 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__summary_noinstance_success(self,
                                               main_log_handler_mock,
                                               debug_log_handler_mock,
-                                              mkdir_mock):
+                                              mkdir_mock,
+                                              version_mock):
         """
         Test that _summary() returns True and test its output when the run_status is SUCCESS
         and the arg --not-an-instance is given.
@@ -2219,14 +2345,17 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__summary_noinstance_failure(self,
                                               main_log_handler_mock,
                                               debug_log_handler_mock,
-                                              mkdir_mock):
+                                              mkdir_mock,
+                                              version_mock):
         """
         Test that _summary() returns True and test its output when the run_status is FAILURE
         and the arg --not-an-instance is given.
@@ -2250,14 +2379,17 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
 
+    @mock.patch("ec2rlcore.main.Main._init_version_check", side_effect=simple_return)
     @mock.patch("os.mkdir", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_debug_log_handler", side_effect=simple_return)
     @mock.patch("ec2rlcore.logutil.LogUtil.set_main_log_handler", side_effect=simple_return)
     def test_main__summary_noinstance_warn(self,
                                            main_log_handler_mock,
                                            debug_log_handler_mock,
-                                           mkdir_mock):
+                                           mkdir_mock,
+                                           version_mock):
         """
         Test that _summary() returns True and test its output when the run_status is WARN
         and the arg --not-an-instance is given.
@@ -2281,3 +2413,22 @@ class TestMain(unittest.TestCase):
         self.assertTrue(main_log_handler_mock.called)
         self.assertTrue(debug_log_handler_mock.called)
         self.assertTrue(mkdir_mock.called)
+        self.assertTrue(version_mock.called)
+
+    @responses.activate
+    def test_main__init_version_check_true(self):
+        responses.add(responses.GET, self.ec2rl.VERSION_ENDPOINT, body="9999.0.0rc0", status=200)
+        with contextlib.redirect_stdout(self.output):
+            self.assertTrue(self.ec2rl._init_version_check())
+        self.assertEqual("An update is available: {} -> {}\n".format(self.PROGRAM_VERSION, "9999.0.0rc0"),
+                         self.output.getvalue())
+
+    @responses.activate
+    def test_main__init_version_check_false(self):
+        responses.add(responses.GET, self.ec2rl.VERSION_ENDPOINT, body="0.0.0rc0", status=200)
+        self.assertFalse(self.ec2rl._init_version_check())
+
+    @mock.patch("requests.get", side_effect=requests.exceptions.Timeout)
+    def test_main__init_version_check_timeout(self, requests_get_mock):
+        self.assertFalse(self.ec2rl._init_version_check())
+        self.assertTrue(requests_get_mock.called)
