@@ -5,6 +5,7 @@
 
 #### Framework
 * [Enhancement] Added --output-dir option.
+* [Enhancement] Added --only-remediation switch for the list subcommand.
 
 #### Modules
 * [Enhancement] Updated iproute module to collect additional route table details.

@@ -960,9 +960,11 @@ class Main(object):
         Review the modules and set the applicable and whyskipping attributes to indicate whether the module should
         be run. Once complete, remove any non-applicable modules from the module list so that they are not run.
         """
+        # TODO refactor so it can be used generically for run and list
+        # TODO support "remediateonly" in self.options.global_args
         # Check if the user specified particular modules to run with --only-modules=
         if "onlymodules" in self.options.global_args:
-            mods_to_run = [mod_name for mod_name in self.options.global_args["onlymodules"].rsplit(",")]
+            mods_to_run = {mod_name for mod_name in self.options.global_args["onlymodules"].rsplit(",")}
         # If the user didn't specify modules with --only-modules then run all modules
         else:
             mods_to_run = "all"

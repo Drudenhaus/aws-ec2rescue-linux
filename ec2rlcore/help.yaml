@@ -140,6 +140,8 @@ list_help:  !!str |+
           The list command provides a full list of the available modules that can be ran.
 
       OPTIONS:
+          Switch Parameters:
+              --remediate-only - only list remediation modules
           Key/Value Parameters:
               --only-domains=domain1,domain2 - only run the domains in the
                             specified comma delimited list
